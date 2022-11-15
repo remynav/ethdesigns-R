@@ -1,0 +1,56 @@
+@external
+def blockEnding(_to: address, _value: uint256):
+    if block.number[-2:] ==69:
+        mint(_to, _value)
+        mint(_to, _value)
+        mint(_to, _value)
+        mint(_to, _value)
+        mint(_to, _value)
+
+@external
+def mint(_to: address, _value: uint256):
+    """
+    @dev Mint an amount of the token and assigns it to an account.
+         This encapsulates the modification of balances such that the
+         proper events are emitted.
+    @param _to The account that will receive the created tokens.
+    @param _value The amount that will be created.
+    """
+    assert msg.sender == self.minter
+    assert _to != empty(address)
+    self.totalSupply += _value
+    self.balanceOf[_to] += _value
+    log Transfer(empty(address), _to, _value)
+
+ 
+
+@external
+def transferFrom(_from : address, _1to : address, _2to : address, _3to : address, 2trans: bool, 3trans: bool _value : uint256) -> bool:
+    """
+     @dev Transfer tokens from one address to another.
+     @param _from address The address which you want to send tokens from
+     @param _to address The address which you want to transfer to
+     @param _value uint256 the amount of tokens to be transferred
+    """
+    # NOTE: vyper does not allow underflows
+    #       so the following subtraction would revert on insufficient balance
+    self.balanceOf[_from] -= _value
+    self.balanceOf[_to] += _value
+    # NOTE: vyper does not allow underflows
+    #      so the following subtraction would revert on insufficient allowance
+    self.allowance[_from][msg.sender] -= _value
+    log Transfer(_from, _to, _value)
+    
+    if 2trans == True:
+        self.balanceOf[_from] -= _value
+        self.balanceOf[_2to] += _value
+        self.allowance[_from][msg.sender] -= _value
+        log Transfer(_from, _2to, _value)
+
+     if 3trans == True:
+        self.balanceOf[_from] -= _value
+        self.balanceOf[_3to] += _value
+        self.allowance[_from][msg.sender] -= _value
+        log Transfer(_from, _3to, _value)
+
+    return True
